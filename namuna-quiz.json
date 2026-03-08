@@ -1,0 +1,50 @@
+{
+    "title": "Koinot Mo'jizalari",
+    "questions": [
+        {
+            "id": "1",
+            "text": "Quyosh tizimidagi eng katta sayyora qaysi?",
+            "options": [
+                "Yer",
+                "Yupiter",
+                "Saturn"
+            ],
+            "correctOptionIndex": 1,
+            "backgroundImage": "https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?q=80&w=1000&auto=format&fit=crop"
+        },
+        {
+            "id": "2",
+            "text": "Yerga eng yaqin yulduz qaysi?",
+            "options": [
+                "Quyosh",
+                "Sirius",
+                "Alfa Sentavr"
+            ],
+            "correctOptionIndex": 0,
+            "backgroundImage": "https://images.unsplash.com/photo-1543722530-d2c3201371e7?q=80&w=1000&auto=format&fit=crop"
+        },
+        {
+            "id": "3",
+            "text": "Oydagi birinchi inson kim bo'lgan?",
+            "options": [
+                "Yuriy Gagarin",
+                "Nil Armstrong",
+                "Bazz Oldrin"
+            ],
+            "correctOptionIndex": 1,
+            "backgroundImage": "https://images.unsplash.com/photo-1522030299830-16b8d3d049febb?q=80&w=1000&auto=format&fit=crop"
+        },
+        {
+            "id": "4",
+            "text": "Quyosh tizimida nechta sayyora bor?",
+            "options": [
+                "7 ta",
+                "8 ta",
+                "9 ta"
+            ],
+            "correctOptionIndex": 1,
+            "backgroundImage": "https://images.unsplash.com/photo-1614314160408-54b9f0ed27ab?q=80&w=1000&auto=format&fit=crop"
+        }
+    ],
+    "timerDuration": 10
+}

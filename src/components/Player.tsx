@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { X, Maximize2, RotateCcw } from "lucide-react";
 import { playPCMAsync, stopPCM } from "../services/tts";
 import { playPop, playTick, playSuccess } from "../services/sfx";
+import { useTranslation } from "react-i18next";
 
 interface PlayerProps {
   quiz: Quiz;
@@ -11,6 +12,7 @@ interface PlayerProps {
 }
 
 export function Player({ quiz, onExit }: PlayerProps) {
+  const { t } = useTranslation();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [phase, setPhase] = useState<
     "init" | "question" | "options" | "timer" | "reveal" | "end"
@@ -32,7 +34,7 @@ export function Player({ quiz, onExit }: PlayerProps) {
       if (isCancelled) return;
 
       setPhase("question");
-      
+
       let audioPromise = Promise.resolve();
       if (question.audioBase64) {
         audioPromise = playPCMAsync(question.audioBase64);
@@ -48,7 +50,7 @@ export function Player({ quiz, onExit }: PlayerProps) {
           if (!isCancelled) playPop();
         }, idx * 150);
       });
-      
+
       // Wait for options animation to finish
       await sleep(question.options.length * 150 + 500);
       if (isCancelled) return;
@@ -62,7 +64,8 @@ export function Player({ quiz, onExit }: PlayerProps) {
       if (isCancelled) return;
 
       setPhase("timer");
-      for (let i = 0; i < 5; i++) {
+      const duration = quiz.timerDuration || 5;
+      for (let i = 0; i < duration; i++) {
         if (isCancelled) return;
         playTick();
         await sleep(1000);
@@ -112,22 +115,22 @@ export function Player({ quiz, onExit }: PlayerProps) {
           <div className="w-20 h-20 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
             <RotateCcw size={40} className="text-emerald-500" />
           </div>
-          <h2 className="text-3xl font-bold mb-2">Test yakunlandi!</h2>
+          <h2 className="text-3xl font-bold mb-2">{t("player.endTitle")}</h2>
           <p className="text-neutral-400 mb-8">
-            Barcha savollar namoyish etildi.
+            {t("player.endText")}
           </p>
           <div className="flex flex-col gap-3">
             <button
               onClick={() => setCurrentQuestionIndex(0)}
               className="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-4 rounded-xl font-semibold transition-colors"
             >
-              <RotateCcw size={20} /> Qayta boshlash
+              <RotateCcw size={20} /> {t("player.restart")}
             </button>
             <button
               onClick={onExit}
               className="w-full flex items-center justify-center gap-2 bg-neutral-800 hover:bg-neutral-700 text-white px-6 py-4 rounded-xl font-semibold transition-colors"
             >
-              <X size={20} /> Tahrirlashga qaytish
+              <X size={20} /> {t("player.exit")}
             </button>
           </div>
         </motion.div>
@@ -177,7 +180,7 @@ export function Player({ quiz, onExit }: PlayerProps) {
 
         {/* Content */}
         <div className="absolute inset-0 flex flex-col p-8 z-10">
-          
+
           {/* Progress Indicator */}
           <div className="absolute top-8 left-8 bg-black/40 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/10 text-white/90 font-mono text-sm font-bold shadow-lg">
             {currentQuestionIndex + 1} / {quiz.questions.length}
@@ -190,18 +193,18 @@ export function Player({ quiz, onExit }: PlayerProps) {
                 phase === "options" ||
                 phase === "timer" ||
                 phase === "reveal") && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95, y: -20 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 25 }}
-                  className="bg-white text-neutral-900 w-full rounded-3xl p-8 shadow-2xl mb-12 text-center relative"
-                >
-                  <h2 className="text-2xl font-bold leading-snug">
-                    {question.text}
-                  </h2>
-                </motion.div>
-              )}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95, y: -20 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                    className="bg-white text-neutral-900 w-full rounded-3xl p-8 shadow-2xl mb-12 text-center relative"
+                  >
+                    <h2 className="text-2xl font-bold leading-snug">
+                      {question.text}
+                    </h2>
+                  </motion.div>
+                )}
             </AnimatePresence>
 
             {/* Options */}
@@ -262,14 +265,14 @@ export function Player({ quiz, onExit }: PlayerProps) {
                   className="w-full"
                 >
                   <div className="text-center text-white/90 text-sm mb-3 font-bold uppercase tracking-[0.2em] drop-shadow-md">
-                    {phase === "timer" ? "O'ylash vaqti..." : "To'g'ri javob"}
+                    {phase === "timer" ? t("player.thinkTime") : t("player.correctAnswer")}
                   </div>
                   <div className="h-2.5 w-full bg-black/40 backdrop-blur-sm rounded-full overflow-hidden border border-white/10">
                     <motion.div
                       initial={{ width: "100%" }}
                       animate={{ width: phase === "reveal" ? "0%" : "0%" }}
                       transition={{
-                        duration: phase === "reveal" ? 0 : 5,
+                        duration: phase === "reveal" ? 0 : (quiz.timerDuration || 5),
                         ease: "linear",
                       }}
                       className="h-full bg-gradient-to-r from-amber-400 to-orange-500 rounded-full"

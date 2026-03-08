@@ -1,12 +1,20 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { Question } from "../types";
 
-export async function generateQuizAI(topic: string): Promise<Question[] | null> {
+export async function generateQuizAI(topic: string, language: string = 'uz'): Promise<Question[] | null> {
   try {
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+
+    const languageNames: Record<string, string> = {
+      uz: "Uzbek",
+      ru: "Russian",
+      en: "English"
+    };
+    const langName = languageNames[language] || "Uzbek";
+
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
-      contents: `Mavzu: ${topic}. Shu mavzuda 5 ta qiziqarli test savolini o'zbek tilida tuzing. Har bir savol 3 ta variantdan iborat bo'lsin. To'g'ri javob indeksini (0, 1 yoki 2) ko'rsating. Orqa fon uchun mos unsplash rasm URL manzilini bering (masalan: https://images.unsplash.com/photo-...). Rasm URL manzillari haqiqiy va mavzuga mos bo'lishi kerak.`,
+      contents: `Topic: ${topic}. Create 5 interesting quiz questions about this topic in ${langName}. The questions and options must be written in ${langName}. Each question must have exactly 3 options. Indicate the correct option index (0, 1, or 2). Provide a suitable unsplash image URL for the background (e.g. https://images.unsplash.com/photo-...). The image URLs must be real and relevant to the topic.`,
       config: {
         responseMimeType: "application/json",
         responseSchema: {
@@ -24,7 +32,7 @@ export async function generateQuizAI(topic: string): Promise<Question[] | null> 
         }
       }
     });
-    
+
     const data = JSON.parse(response.text || "[]");
     return data.map((q: any) => ({
       ...q,

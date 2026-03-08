@@ -1,6 +1,6 @@
 import { GoogleGenAI, Modality } from "@google/genai";
 
-export async function generateTTS(text: string): Promise<string | null> {
+export async function generateTTS(text: string, voiceName: string = "Kore"): Promise<string | null> {
   try {
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
     const response = await ai.models.generateContent({
@@ -10,7 +10,7 @@ export async function generateTTS(text: string): Promise<string | null> {
         responseModalities: [Modality.AUDIO],
         speechConfig: {
           voiceConfig: {
-            prebuiltVoiceConfig: { voiceName: "Kore" },
+            prebuiltVoiceConfig: { voiceName },
           },
         },
       },
@@ -44,7 +44,7 @@ let currentSource: AudioBufferSourceNode | null = null;
 
 export function stopPCM() {
   if (currentSource) {
-    try { currentSource.stop(); } catch(e) {}
+    try { currentSource.stop(); } catch (e) { }
     currentSource = null;
   }
 }

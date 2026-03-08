@@ -10,4 +10,5 @@ export interface Question {
 export interface Quiz {
   title: string;
   questions: Question[];
+  timerDuration?: number; // Optional timer duration in seconds
 }
