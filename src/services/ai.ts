@@ -3,7 +3,13 @@ import { Question } from "../types";
 
 export async function generateQuizAI(topic: string, language: string = 'uz'): Promise<Question[] | null> {
   try {
-    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+    const apiKeys = [
+      process.env.GEMINI_API_KEY,
+      process.env.GEMINI_API_KEY2,
+      process.env.GEMINI_API_KEY3
+    ].filter(Boolean) as string[];
+    const apiKey = apiKeys[Math.floor(Math.random() * apiKeys.length)];
+    const ai = new GoogleGenAI({ apiKey });
 
     const languageNames: Record<string, string> = {
       uz: "Uzbek",
